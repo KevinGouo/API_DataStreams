@@ -21,10 +21,12 @@ datasort = data.sort_values('Deaths', ascending=False)
 print(datasort[:50])
 datasort = datasort.head(15)
 
-
 A = ["Confirmed", "Deaths"]
-datasort[A].plot.bar(figsize=(30,5), rot=0, width=0.9)
+datasort[A].plot.bar(figsize=(30, 5), rot=0, width=0.9)
 plt.xticks(rotation=90)
 plt.show()
 
-
+B = ["People_Tested", "Confirmed"]
+datasort[B].plot.bar(figsize=(20, 5), rot=0, width=0.9)
+plt.xticks(rotation=90)
+plt.show()
