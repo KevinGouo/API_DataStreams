@@ -24,9 +24,20 @@ datasort = datasort.head(15)
 A = ["Confirmed", "Deaths"]
 datasort[A].plot.bar(figsize=(30, 5), rot=0, width=0.9)
 plt.xticks(rotation=90)
+plt.title("Confirmed cases and deaths by regions")
 plt.show()
+plt.clf()
 
 B = ["People_Tested", "Confirmed"]
 datasort[B].plot.bar(figsize=(20, 5), rot=0, width=0.9)
 plt.xticks(rotation=90)
+plt.title("People tested and confirmed cases by regions")
 plt.show()
+plt.clf()
+
+C = ["People_Hospitalized","Recovered"]
+datasort[C].plot.bar(figsize=(20,5), rot=0, width=0.9)
+plt.xticks(rotation=90)
+plt.title("People hospitalized and recovered cases by regions")
+plt.show()
+plt.clf()
