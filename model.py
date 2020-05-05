@@ -20,3 +20,11 @@ datasort = data.sort_values('Deaths', ascending=False)
 # Preview all of the loaded data
 print(datasort[:50])
 datasort = datasort.head(15)
+
+
+A = ["Confirmed", "Deaths"]
+datasort[A].plot.bar(figsize=(30,5), rot=0, width=0.9)
+plt.xticks(rotation=90)
+plt.show()
+
+
