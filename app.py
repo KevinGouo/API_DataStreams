@@ -68,3 +68,10 @@ def update():
     except requests.exceptions.RequestException as e:
         print("Fatal error on recovered cases request")
         raise SystemExit(e)
+
+
+def fill(json, df, dftype):
+    json[dftype] = {}
+    json[dftype]['locations'] = []
+
+    tmp_latest_confirmed = int(df.sum(axis=0)[-1])
