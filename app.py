@@ -46,7 +46,44 @@ url_dths = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/css
 url_reco = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv"
 
 
-def update():
+def fill(json, df, dftype):
+    json[dftype] = {}
+    json[dftype]['locations'] = []
+
+    latest = int(df.sum(axis=0)[-1])
+
+    for index, row in df.iterrows():
+
+        element = {}
+
+        province = str(row['Province/State'])
+        country_name = row['Country/Region']
+
+        latest_country = row[-1]
+
+        position = {}
+        position['latitude'] = row['Lat']
+        position['longitude'] = row['Long']
+
+        tmp_country_history = {}
+
+        for i in range(4, df.shape[1]):
+            tmp_country_history[list(df.columns.values)[i]] = row[i]
+
+        element['coordinates'] = position
+        element['country'] = country_name
+        element['history'] = tmp_country_history
+        element['latest'] = latest_country
+        element['province'] = province
+
+        json[dftype]['locations'].append(element)
+
+    json[dftype]['latest'] = latest
+
+    return json
+
+
+def init():
     # Initialise the json object
     json_data_final = {}
 
@@ -69,9 +106,30 @@ def update():
         print("Fatal error on recovered cases request")
         raise SystemExit(e)
 
+    # Confirmed cases
+    df_confirmed = pd.read_csv(io.StringIO(confirmed_.decode('utf-8')))
+    json_data_final = fill(json_data_final, df_confirmed, "confirmed")
 
-def fill(json, df, dftype):
-    json[dftype] = {}
-    json[dftype]['locations'] = []
+    # Deaths cases
+    df_deaths = pd.read_csv(io.StringIO(deaths_.decode('utf-8')))
+    json_data_final = fill(json_data_final, df_deaths, "deaths")
 
-    tmp_latest_confirmed = int(df.sum(axis=0)[-1])
+    # Recovered cases
+    df_recovered = pd.read_csv(io.StringIO(recovered_.decode('utf-8')))
+    json_data_final = fill(json_data_final, df_recovered, "recovered")
+
+    # Latest cases
+    json_data_final['latest'] = {}
+    json_data_final['latest']['confirmed'] = json_data_final['confirmed']['latest']
+    json_data_final['latest']['deaths'] = json_data_final['deaths']['latest']
+    json_data_final['latest']['recovered'] = json_data_final['recovered']['latest']
+
+    # Update datetime
+    json_data_final['updatedAt'] = str(pd.datetime.datetime.utcnow())
+
+    with open('data.json', 'w') as f:
+        json.dump(json_data_final, f)
+        sys.stdout.flush()
+        print("Updated")
+
+    return 0
