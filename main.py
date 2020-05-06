@@ -4,7 +4,9 @@ import requests
 import json
 import io
 import sys
+import json
 import os
+import datetime
 
 covid_url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/05-02-2020.csv"
 csv_file = requests.get(covid_url)
@@ -47,6 +49,7 @@ url_reco = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/css
 
 
 def fill(json, df, dftype):
+
     json[dftype] = {}
     json[dftype]['locations'] = []
 
@@ -65,14 +68,14 @@ def fill(json, df, dftype):
         position['latitude'] = row['Lat']
         position['longitude'] = row['Long']
 
-        tmp_country_history = {}
+        country_history = {}
 
         for i in range(4, df.shape[1]):
-            tmp_country_history[list(df.columns.values)[i]] = row[i]
+            country_history[list(df.columns.values)[i]] = row[i]
 
         element['coordinates'] = position
         element['country'] = country_name
-        element['history'] = tmp_country_history
+        element['history'] = country_history
         element['latest'] = latest_country
         element['province'] = province
 
@@ -125,7 +128,7 @@ def init():
     json_data_final['latest']['recovered'] = json_data_final['recovered']['latest']
 
     # Update datetime
-    json_data_final['updatedAt'] = str(pd.datetime.datetime.utcnow())
+    json_data_final['updatedAt'] = str(datetime.datetime.utcnow())
 
     with open('data.json', 'w') as f:
         json.dump(json_data_final, f)
