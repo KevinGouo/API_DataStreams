@@ -1,11 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import requests
-import json
 import io
 import sys
 import json
-import os
 import datetime
 
 covid_url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/05-02-2020.csv"
